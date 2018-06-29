@@ -10,7 +10,9 @@ import {MatGridListModule} from '@angular/material/grid-list';
 
 // Application imports
 import { AppRoutingModule } from './app-routing.module';
+import { ServicesModule } from './services/services.module';
 
+// Components
 import { AppComponent } from './app.component';
 import { PlayerlistComponent } from './playerlist/playerlist.component';
 import { PlayerdetailsComponent } from './playerdetails/playerdetails.component';
@@ -28,7 +30,8 @@ import { PlayerdetailsComponent } from './playerdetails/playerdetails.component'
     FormsModule,
     MatToolbarModule,
     MatGridListModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ServicesModule
   ],
   providers: [],
   bootstrap: [AppComponent]
