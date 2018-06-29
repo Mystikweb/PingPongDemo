@@ -1,0 +1,260 @@
+{
+    "x-generator": "NSwag v11.17.18.0 (NJsonSchema v9.10.58.0 (Newtonsoft.Json v11.0.0.0))",
+    "swagger": "2.0",
+    "info": {
+      "title": "PingPong Player API",
+      "description": "API for the PingPong code challenge",
+      "termsOfService": "None",
+      "contact": {
+        "name": "Christopher Hair",
+        "url": "https://mystikweb.github.io/",
+        "email": "mystikweb@live.ca"
+      },
+      "license": {
+        "name": "Use under MIT",
+        "url": "https://github.com/Mystikweb/PingPongDemo/blob/master/LICENSE"
+      },
+      "version": "v1"
+    },
+    "host": "localhost:5001",
+    "schemes": [
+      "https"
+    ],
+    "consumes": [
+      "application/json"
+    ],
+    "produces": [
+      "application/json"
+    ],
+    "paths": {
+      "/api/Player": {
+        "get": {
+          "tags": [
+            "Player"
+          ],
+          "operationId": "Player_GetAll",
+          "responses": {
+            "200": {
+              "x-nullable": true,
+              "description": "",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/Player"
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": [
+            "Player"
+          ],
+          "operationId": "Player_Create",
+          "parameters": [
+            {
+              "name": "player",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/Player"
+              },
+              "x-nullable": true
+            }
+          ],
+          "responses": {
+            "400": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/Player/{id}": {
+        "get": {
+          "tags": [
+            "Player"
+          ],
+          "operationId": "Player_GetById",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "format": "int32",
+              "x-nullable": false
+            }
+          ],
+          "responses": {
+            "200": {
+              "x-nullable": true,
+              "description": "",
+              "schema": {
+                "$ref": "#/definitions/Player"
+              }
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "Player"
+          ],
+          "operationId": "Player_Update",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "format": "int32",
+              "x-nullable": false
+            },
+            {
+              "name": "player",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/Player"
+              },
+              "x-nullable": true
+            }
+          ],
+          "responses": {
+            "400": {
+              "description": ""
+            },
+            "404": {
+              "description": ""
+            },
+            "204": {
+              "description": ""
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "Player"
+          ],
+          "operationId": "Player_Delete",
+          "parameters": [
+            {
+              "type": "integer",
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "format": "int32",
+              "x-nullable": false
+            }
+          ],
+          "responses": {
+            "404": {
+              "description": ""
+            },
+            "204": {
+              "description": ""
+            }
+          }
+        }
+      },
+      "/api/SampleData/WeatherForecasts": {
+        "get": {
+          "tags": [
+            "SampleData"
+          ],
+          "operationId": "SampleData_WeatherForecasts",
+          "responses": {
+            "200": {
+              "x-nullable": true,
+              "description": "",
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/WeatherForecast"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Player": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "playerId",
+          "firstName",
+          "lastName",
+          "email",
+          "skillLevel"
+        ],
+        "properties": {
+          "playerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstName": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3
+          },
+          "lastName": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 3
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "skillLevel": {
+            "$ref": "#/definitions/SkillLevel"
+          },
+          "age": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "SkillLevel": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Beginner",
+          "Intermediate",
+          "Advanced",
+          "Expert"
+        ],
+        "enum": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "WeatherForecast": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "temperatureC",
+          "temperatureF"
+        ],
+        "properties": {
+          "dateFormatted": {
+            "type": "string"
+          },
+          "temperatureC": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "temperatureF": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
