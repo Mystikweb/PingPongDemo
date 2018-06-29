@@ -54,6 +54,29 @@ namespace PingPong
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
+            // Add additional information for SwaggerUI
+            app.UseSwagger(typeof(Startup).Assembly, settings =>
+            {
+                settings.PostProcess = document =>
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "PingPong Player API";
+                    document.Info.Description = "API for the PingPong code challenge";
+                    document.Info.TermsOfService = "None";
+                    document.Info.Contact = new NSwag.SwaggerContact
+                    {
+                        Name = "Christopher Hair",
+                        Email = "mystikweb@live.ca",
+                        Url = "https://mystikweb.github.io/"
+                    };
+                    document.Info.License = new NSwag.SwaggerLicense
+                    {
+                        Name = "Use under MIT",
+                        Url = "https://github.com/Mystikweb/PingPongDemo/blob/master/LICENSE"
+                    };
+                };
+            });
+
             // Enable the Swagger UI middleware and the Swagger generator
             app.UseSwaggerUi(typeof(Startup).GetTypeInfo().Assembly, settings =>
             {
