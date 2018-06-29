@@ -13,11 +13,13 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { PlayerlistComponent } from './playerlist/playerlist.component';
+import { PlayerdetailsComponent } from './playerdetails/playerdetails.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PlayerlistComponent
+    PlayerlistComponent,
+    PlayerdetailsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
