@@ -13,10 +13,7 @@ export class PlayerdetailsComponent implements OnInit {
   playerForm: FormGroup;
   skills = new Array();
 
-  constructor(
-    private builder: FormBuilder,
-    private client: PlayerClientService
-  ) {
+  constructor(private builder: FormBuilder, private client: PlayerClientService) {
 
     Object.keys(SkillLevel).forEach(key => {
       if (!isNaN(Number(key))) {

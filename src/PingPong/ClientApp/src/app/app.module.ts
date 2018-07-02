@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatListModule, MatList } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -36,6 +37,7 @@ import { PlayerdetailsComponent } from './playerdetails/playerdetails.component'
     MatSidenavModule,
     MatToolbarModule,
     MatGridListModule,
+    MatListModule,
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,

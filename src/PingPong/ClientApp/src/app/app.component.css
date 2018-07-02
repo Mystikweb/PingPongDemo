@@ -6,10 +6,6 @@
   width: 48px;
 }
 
-.app-container > mat-sidenav a {
-  text-align: center;
-}
-
 .app-content {
   padding: 4px 8px;
 }
