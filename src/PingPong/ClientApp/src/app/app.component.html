@@ -1,6 +1,14 @@
 <mat-toolbar color="primary">
   <span>Ping Pong Players</span>
+  <span class="navbar-fill"></span>
 </mat-toolbar>
-<div class="app-content">
-  <router-outlet></router-outlet>
-</div>
+<mat-sidenav-container class="app-container">
+  <mat-sidenav mode="side" opened fixedInViewport fixedTopGap="64">
+      <a mat-icon-button title="Add new player" routerLink="player/new">
+        <mat-icon aria-label="Add new player">add</mat-icon>
+      </a>
+  </mat-sidenav>
+  <mat-sidenav-content class="app-content">
+      <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

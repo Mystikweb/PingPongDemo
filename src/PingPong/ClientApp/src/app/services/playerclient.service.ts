@@ -28,35 +28,28 @@ export class PlayerClientService {
         let url_ = this.baseUrl + "/api/Player";
         url_ = url_.replace(/[?&]$/, "");
 
-        return this.http.get<Player[]>(url_);
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAll(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAll(<any>response_);
+                } catch (e) {
+                    return <Observable<Player[] | null>><any>_observableThrow(e);
+                }
+            } else
+                return <Observable<Player[] | null>><any>_observableThrow(response_);
+        }));
     }
-
-    // getAll(): Observable<Player[] | null> {
-    //     let url_ = this.baseUrl + "/api/Player";
-    //     url_ = url_.replace(/[?&]$/, "");
-
-    //     let options_ : any = {
-    //         observe: "response",
-    //         responseType: "blob",
-    //         headers: new HttpHeaders({
-    //             "Content-Type": "application/json",
-    //             "Accept": "application/json"
-    //         })
-    //     };
-
-    //     return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-    //         return this.processGetAll(response_);
-    //     })).pipe(_observableCatch((response_: any) => {
-    //         if (response_ instanceof HttpResponseBase) {
-    //             try {
-    //                 return this.processGetAll(<any>response_);
-    //             } catch (e) {
-    //                 return <Observable<Player[] | null>><any>_observableThrow(e);
-    //             }
-    //         } else
-    //             return <Observable<Player[] | null>><any>_observableThrow(response_);
-    //     }));
-    // }
 
     protected processGetAll(response: HttpResponseBase): Observable<Player[] | null> {
         const status = response.status;

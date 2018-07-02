@@ -1,0 +1,8 @@
+.player-form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-form-container > * {
+  width: 40%;
+}
