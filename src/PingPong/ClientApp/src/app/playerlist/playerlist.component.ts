@@ -1,6 +1,4 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { Observable } from 'rxjs';
-
 import { MatSnackBar } from '@angular/material';
 
 import { PlayerClientService, Player, SkillLevel } from '../services/playerclient.service';
@@ -12,7 +10,7 @@ import { PlayerClientService, Player, SkillLevel } from '../services/playerclien
 })
 export class PlayerlistComponent implements OnInit, AfterViewInit {
   skillLevels = SkillLevel;
-  playerList$: Observable<Player[]>;
+  playerList: Player[];
   constructor(private snackBar: MatSnackBar, private client: PlayerClientService) { }
 
   ngOnInit() {
@@ -31,13 +29,15 @@ export class PlayerlistComponent implements OnInit, AfterViewInit {
         this.snackBar.open('Player removed successfully', null, {
           duration: 3000
         }).afterDismissed().subscribe(() => {
-          this.playerList$.subscribe();
+          this.loadPlayerData();
         });
       });
     });
   }
 
   loadPlayerData() {
-    this.playerList$ = this.client.getAll();
+    this.client.getAll().subscribe((data: Player[]) => {
+      this.playerList = data;
+    });
   }
 }

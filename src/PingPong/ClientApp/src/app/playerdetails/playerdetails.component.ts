@@ -6,6 +6,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material';
 
 import { Player, SkillLevel, PlayerClientService } from '../services/playerclient.service';
+import { isNumber } from 'util';
 
 @Component({
   selector: 'app-playerdetails',
@@ -32,16 +33,40 @@ export class PlayerdetailsComponent implements OnInit {
     this.createForm();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    const playerId = this.route.snapshot.paramMap.get('playerId');
+    if (isNumber(Number(playerId))) {
+      this.client.getById(Number(playerId)).subscribe((value: any) => {
+        this.player = value as Player;
+        this.setupPlayer();
+      });
+    } else {
+      this.setupPlayer();
+    }
+  }
 
   onSubmit() {
     this.player = this.prepareSavePlayer();
-    this.client.create(this.player).subscribe((data?: any) => {
-      console.log(data);
-      this.snackBar.open('Player saved successfully').afterDismissed().subscribe(() => {
-        this.location.back();
+    if (this.player.playerId === 0) {
+      this.client.create(this.player).subscribe((data?: any) => {
+        console.log(data);
+        this.snackBar.open('Player saved successfully', null, { duration: 2000 }).afterDismissed().subscribe(() => {
+          this.location.back();
+        });
       });
-    });
+    } else {
+      this.client.update(this.player.playerId, this.player).subscribe((data?: any) => {
+        console.log(data);
+        this.snackBar.open('Player saved successfully', null, { duration: 2000 }).afterDismissed().subscribe(() => {
+          this.location.back();
+        });
+      });
+    }
+  }
+
+  onReset() {
+    this.setupPlayer();
+    this.location.back();
   }
 
   createForm() {
@@ -67,5 +92,25 @@ export class PlayerdetailsComponent implements OnInit {
     });
 
     return playerResult;
+  }
+
+  setupPlayer() {
+    if (this.player !== undefined) {
+      this.playerForm.reset({
+        firstName: this.player.firstName,
+        lastName: this.player.lastName,
+        email: this.player.email,
+        skillLevel: this.player.skillLevel.toString(),
+        age: this.player.age
+      });
+    } else {
+      this.playerForm.reset({
+        firstName: '',
+        lastName: '',
+        email: '',
+        skillLevel: '0',
+        age: null
+      });
+    }
   }
 }

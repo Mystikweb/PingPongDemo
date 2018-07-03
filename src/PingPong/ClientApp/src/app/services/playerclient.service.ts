@@ -117,7 +117,7 @@ export class PlayerClientService {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("A server error occurred.", status, _responseText, _headers);
             }));
-        } else if (status !== 200 && status !== 204) {
+        } else if (status !== 200 && status !== 201 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
