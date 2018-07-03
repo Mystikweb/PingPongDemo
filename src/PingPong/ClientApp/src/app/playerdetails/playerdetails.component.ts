@@ -26,7 +26,10 @@ export class PlayerdetailsComponent implements OnInit {
 
   ngOnInit() {}
 
-  onSubmit() {}
+  onSubmit() {
+    this.player = this.prepareSavePlayer();
+    this.client.create(this.player).subscribe();
+  }
 
   createForm() {
     this.playerForm = this.builder.group({
@@ -36,5 +39,20 @@ export class PlayerdetailsComponent implements OnInit {
       skillLevel: ['0', Validators.required],
       age: [null, [Validators.min(1), Validators.max(99)]]
     });
+  }
+
+  prepareSavePlayer() {
+    const formValue = this.playerForm.value;
+
+    const playerResult: Player = Player.fromJS({
+      playerId: this.player !== undefined ? this.player.playerId : 0,
+      firstName: formValue.firstName as string,
+      lastName: formValue.lastName as string,
+      email: formValue.email as string,
+      skillLevel: SkillLevel[formValue.skillLevel as number],
+      age: formValue.age
+    });
+
+    return playerResult;
   }
 }
