@@ -1,0 +1,12 @@
+.player-card {
+  max-width: 240px;
+}
+
+.card-item-list > mat-list-item {
+  height: 28px;
+}
+
+.card-action-list {
+  display: flex;
+  justify-content: flex-end;
+}

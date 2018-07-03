@@ -1,5 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+import { MatSnackBar } from '@angular/material';
 
 import { Player, SkillLevel, PlayerClientService } from '../services/playerclient.service';
 
@@ -13,7 +17,11 @@ export class PlayerdetailsComponent implements OnInit {
   playerForm: FormGroup;
   skills = new Array();
 
-  constructor(private builder: FormBuilder, private client: PlayerClientService) {
+  constructor(private route: ActivatedRoute,
+    private location: Location,
+    private builder: FormBuilder,
+    private snackBar: MatSnackBar,
+    private client: PlayerClientService) {
 
     Object.keys(SkillLevel).forEach(key => {
       if (!isNaN(Number(key))) {
@@ -28,7 +36,12 @@ export class PlayerdetailsComponent implements OnInit {
 
   onSubmit() {
     this.player = this.prepareSavePlayer();
-    this.client.create(this.player).subscribe();
+    this.client.create(this.player).subscribe((data?: any) => {
+      console.log(data);
+      this.snackBar.open('Player saved successfully').afterDismissed().subscribe(() => {
+        this.location.back();
+      });
+    });
   }
 
   createForm() {
