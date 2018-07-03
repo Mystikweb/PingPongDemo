@@ -1,0 +1,26 @@
+<mat-grid-list cols="5">
+  <mat-grid-tile *ngFor="let player of playerList">
+    <mat-card class="player-card">
+      <mat-card-header>
+        <mat-card-title>{{ player.firstName }} {{ player.lastName }}</mat-card-title>
+        <mat-card-subtitle>{{ player.email }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <mat-list role="list" class="card-item-list">
+          <mat-list-item role="listitem">Skill level: {{ skillLevels[player.skillLevel] }}</mat-list-item>
+          <mat-list-item role="listitem">Age: {{ player.age === null ? 'N/A' : player.age }}</mat-list-item>
+        </mat-list>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions class="card-action-list">
+        <a mat-icon-button color="accent" title="Edit" routerLink="{{ player.playerId }}">
+          <mat-icon>edit</mat-icon>
+        </a>
+        <button mat-icon-button color="warn" title="Remove" (click)="remove(player)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>

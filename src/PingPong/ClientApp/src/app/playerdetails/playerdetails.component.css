@@ -1,0 +1,19 @@
+.player-form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.player-form-container > * {
+  width: 40%;
+}
+
+.player-form-container .button-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.player-form-container .button-row button,
+.player-form-container .button-row a {
+  margin-right: 8px;
+}
