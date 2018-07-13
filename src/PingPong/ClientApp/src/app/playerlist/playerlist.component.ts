@@ -9,6 +9,7 @@ import { PlayerClientService, Player, SkillLevel } from '../services/playerclien
   styleUrls: ['./playerlist.component.css']
 })
 export class PlayerlistComponent implements OnInit, AfterViewInit {
+  requestRunning = false;
   skillLevels = SkillLevel;
   playerList: Player[];
   constructor(private snackBar: MatSnackBar, private client: PlayerClientService) { }
@@ -25,9 +26,10 @@ export class PlayerlistComponent implements OnInit, AfterViewInit {
     this.snackBar.open(confirmMessage, 'OK', {
       duration: 5000
     }).onAction().subscribe(() => {
+      this.requestRunning = true;
       this.client.delete(player.playerId).subscribe(() => {
         this.snackBar.open('Player removed successfully', null, {
-          duration: 3000
+          duration: 1000
         }).afterDismissed().subscribe(() => {
           this.loadPlayerData();
         });
@@ -36,8 +38,10 @@ export class PlayerlistComponent implements OnInit, AfterViewInit {
   }
 
   loadPlayerData() {
+    this.requestRunning = true;
     this.client.getAll().subscribe((data: Player[]) => {
       this.playerList = data;
+      this.requestRunning = false;
     });
   }
 }
