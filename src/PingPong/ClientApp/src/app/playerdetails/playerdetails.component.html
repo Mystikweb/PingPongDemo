@@ -17,13 +17,11 @@
     <input type="number" matInput placeholder="Age" formControlName="age">
   </mat-form-field>
   <div class="button-row">
-    <button type="submit" mat-raised-button color="primary">
+    <button type="submit" mat-raised-button color="primary" [disabled]="playerForm.pristine || playerForm.status === 'INVALID' || requestRunning">
       <mat-icon>save</mat-icon> Save
     </button>
-    <button type="reset" mat-raised-button color="accent" (click)="onReset()">
+    <button type="reset" mat-raised-button color="accent" (click)="onReset()" [disabled]="requestRunning">
       <mat-icon>cancel</mat-icon> Cancel
     </button>
   </div>
 </form>
-<!-- <p>Form value: {{ playerForm.value | json }}</p>
-<p>Form status: {{ playerForm.status }}</p> -->

@@ -17,6 +17,7 @@ export class PlayerdetailsComponent implements OnInit {
   @Input() player: Player;
   playerForm: FormGroup;
   skills = new Array();
+  requestRunning = false;
 
   constructor(private route: ActivatedRoute,
     private location: Location,
@@ -46,17 +47,16 @@ export class PlayerdetailsComponent implements OnInit {
   }
 
   onSubmit() {
+    this.requestRunning = true;
     this.player = this.prepareSavePlayer();
     if (this.player.playerId === 0) {
       this.client.create(this.player).subscribe((data?: any) => {
-        console.log(data);
         this.snackBar.open('Player saved successfully', null, { duration: 2000 }).afterDismissed().subscribe(() => {
           this.location.back();
         });
       });
     } else {
       this.client.update(this.player.playerId, this.player).subscribe((data?: any) => {
-        console.log(data);
         this.snackBar.open('Player saved successfully', null, { duration: 2000 }).afterDismissed().subscribe(() => {
           this.location.back();
         });

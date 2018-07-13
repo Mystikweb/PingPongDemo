@@ -6,6 +6,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 // Material module imports
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
@@ -36,6 +37,7 @@ import { PlayerdetailsComponent } from './playerdetails/playerdetails.component'
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    MatTooltipModule,
     MatSnackBarModule,
     MatIconModule,
     MatDividerModule,

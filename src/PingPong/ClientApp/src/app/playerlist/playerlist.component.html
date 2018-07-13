@@ -14,10 +14,10 @@
       </mat-card-content>
       <mat-divider></mat-divider>
       <mat-card-actions class="card-action-list">
-        <a mat-icon-button color="accent" title="Edit" routerLink="{{ player.playerId }}">
+        <a mat-icon-button color="accent" title="Edit" routerLink="{{ player.playerId }}" [disabled]="requestRunning">
           <mat-icon>edit</mat-icon>
         </a>
-        <button mat-icon-button color="warn" title="Remove" (click)="remove(player)">
+        <button mat-icon-button color="warn" title="Remove" (click)="remove(player)" [disabled]="requestRunning">
           <mat-icon>delete</mat-icon>
         </button>
       </mat-card-actions>
