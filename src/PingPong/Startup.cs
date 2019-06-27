@@ -1,15 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using NJsonSchema;
-using NSwag.AspNetCore;
 using PingPong.Models;
-using System.Reflection;
 
 namespace PingPong
 {
@@ -25,7 +21,7 @@ namespace PingPong
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -35,6 +31,28 @@ namespace PingPong
 
             services.AddDbContext<PingPongContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("PingPongDatabase")));
+
+            services.AddSwaggerDocument(settings =>
+            {
+                settings.PostProcess = document =>
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "PingPong Player API";
+                    document.Info.Description = "API for the PingPong code challenge";
+                    document.Info.TermsOfService = "None";
+                    document.Info.Contact = new NSwag.OpenApiContact
+                    {
+                        Name = "Christopher Hair",
+                        Email = "mystikweb@live.ca",
+                        Url = "https://mystikweb.github.io/"
+                    };
+                    document.Info.License = new NSwag.OpenApiLicense
+                    {
+                        Name = "Use under MIT",
+                        Url = "https://github.com/Mystikweb/PingPongDemo/blob/master/LICENSE"
+                    };
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,35 +72,9 @@ namespace PingPong
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            // Add additional information for SwaggerUI
-            // app.UseSwagger(typeof(Startup).Assembly, settings =>
-            // {
-            //     settings.PostProcess = document =>
-            //     {
-            //         document.Info.Version = "v1";
-            //         document.Info.Title = "PingPong Player API";
-            //         document.Info.Description = "API for the PingPong code challenge";
-            //         document.Info.TermsOfService = "None";
-            //         document.Info.Contact = new NSwag.SwaggerContact
-            //         {
-            //             Name = "Christopher Hair",
-            //             Email = "mystikweb@live.ca",
-            //             Url = "https://mystikweb.github.io/"
-            //         };
-            //         document.Info.License = new NSwag.SwaggerLicense
-            //         {
-            //             Name = "Use under MIT",
-            //             Url = "https://github.com/Mystikweb/PingPongDemo/blob/master/LICENSE"
-            //         };
-            //     };
-            // });
-
             // Enable the Swagger UI middleware and the Swagger generator
-            // app.UseSwaggerUi(typeof(Startup).GetTypeInfo().Assembly, settings =>
-            // {
-            //     settings.GeneratorSettings.DefaultPropertyNameHandling = 
-            //         PropertyNameHandling.CamelCase;
-            // });
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
 
             app.UseMvc(routes =>
             {
