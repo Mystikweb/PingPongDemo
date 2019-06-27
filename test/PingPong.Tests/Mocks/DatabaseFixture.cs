@@ -2,7 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using PingPong.Models;
 
-namespace PingPong.Tests.Fixtures
+namespace PingPong.Tests.Mocks
 {
     public class DatabaseFixture : IDisposable
     {

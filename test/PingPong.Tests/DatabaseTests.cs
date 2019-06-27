@@ -1,6 +1,6 @@
 using System;
 using Xunit;
-using PingPong.Tests.Fixtures;
+using PingPong.Tests.Mocks;
 using PingPong.Tests.Utilities;
 using System.Linq;
 using PingPong.Models;
