@@ -5,10 +5,11 @@ using PingPong.Tests.Utilities;
 using System.Linq;
 using PingPong.Models;
 
-namespace PingPong.Tests
+namespace PingPong.Tests.UnitTests
 {
     [TestCaseOrderer("PingPong.Tests.Utilities.PriorityOrderer", "PingPong.Tests")]
-    public class DatabaseTests : IClassFixture<DatabaseFixture>
+    public class DatabaseTests : 
+        IClassFixture<DatabaseFixture>
     {
         private readonly DatabaseFixture dbFixture;
 
@@ -40,7 +41,7 @@ namespace PingPong.Tests
             Player player = dbFixture.DbContext.Players.FirstOrDefault(p => p.Email == dbFixture.TestPlayer.Email);
 
             Assert.NotNull(player);
-            Assert.Equal(player.Age, 99);
+            Assert.Equal(99, player.Age);
 
             player.Age = 40;
 

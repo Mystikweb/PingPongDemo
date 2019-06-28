@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using PingPong.Models;
 
@@ -5,20 +6,92 @@ namespace PingPong.Tests.Utilities
 {
     public static class DatabaseSeed
     {
-        public static void InitializeMockDatabaseRecords(PingPongContext context)
+        private static string[] firstNames = new[]
         {
-            context.Players.AddRange(GetSeedData());
+            "John", "Jane", "Cedric", "Otto", "Carol", "Nell", "Sherwood", "Norma", "Johnie", "Hugo", "Bennie", "Florine"
+        };
+
+        private static string[] lastNames = new[]
+        {
+            "Doe", "Duran", "Nelson", "Keith", "Conner", "Hays", "Mcgrath", "Perez", "Payne", "Mcclain", "Chaney"
+        };
+
+        private static string[] organizations = new[]
+        {
+            "historical", "eastern", "suspicious", "successful", "serious", "reasonable", "administrative", "legal", "electrical", "intelligent"
+        };
+
+        private static string[] domainType = new[]
+        {
+            "com", "org", "net", "biz"
+        };
+
+        public static void InitializeMockDatabaseRecords(PingPongContext context, int count = 5)
+        {
+            context.Players.AddRange(GetSeedData(count));
             context.SaveChanges();
         }
 
-        public static List<Player> GetSeedData()
+        public static List<Player> GetSeedData(int count)
         {
-            return new List<Player>
+            List<Player> results = new List<Player>();
+
+            for (int i = 0; i < count; i++)
             {
-                new Player { FirstName = "John", LastName = "Doe", Email = "john.doe@somewhere.org", SkillLevel = SkillLevel.Beginner, Age = 99 },
-                new Player { FirstName = "Jane", LastName = "Doe", Email = "jane.doe@someone.org", SkillLevel = SkillLevel.Intermediate, Age = 88 },
-                new Player { FirstName = "Foo", LastName = "Bar", Email = "foo.bar@something.org", SkillLevel = SkillLevel.Advanced, Age = 77 }
+                results.Add(GenerateRandomPlayer());
+            }
+
+            return results;
+        }
+
+        public static Player GenerateRandomPlayer()
+        {
+            string firstName = GetRandomFirstName();
+            string lastName = GetRandomLastName();
+
+            return new Player
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                Email = GetRandomEmail(firstName, lastName),
+                SkillLevel = GetRandomSkillLevel(),
+                Age = GetRandomAge()
             };
+        }
+
+        public static string GetRandomFirstName()
+        {
+            return GetRandomString(firstNames);
+        }
+
+        public static string GetRandomLastName()
+        {
+            return GetRandomString(lastNames);
+        }
+
+        public static string GetRandomEmail(string firstName, string lastName)
+        {
+            Random random = new Random();
+            return $"{firstName}.{lastName}@{organizations[random.Next(organizations.Length)]}.{domainType[random.Next(domainType.Length)]}";
+        }
+
+        public static SkillLevel GetRandomSkillLevel()
+        {
+            Random random = new Random();
+            Array values = Enum.GetValues(typeof(SkillLevel));
+            return (SkillLevel)values.GetValue(random.Next(values.Length));
+        }
+
+        public static int GetRandomAge()
+        {
+            Random random = new Random();
+            return random.Next(25, 85);
+        }
+
+        private static string GetRandomString(string[] values)
+        {
+            Random random = new Random();
+            return values[random.Next(values.Length)];
         }
     }
 }
