@@ -1,0 +1,10 @@
+sudo: required
+dist: xenial
+language: csharp
+mono: none
+dotnet: 2.2.300
+solution: PingPong.sln
+script:
+  - dotnet restore
+  - dotnet build
+  - dotnet test
