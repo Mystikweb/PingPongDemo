@@ -3,17 +3,16 @@
     "tasks": [
         {
             "label": "build",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "build",
-                "${workspaceFolder}/src/PingPong/PingPong.csproj"
-            ],
-            "problemMatcher": "$msCompile",
+            "command": "dotnet build",
+            "type": "shell",
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
         }
     ]
 }
