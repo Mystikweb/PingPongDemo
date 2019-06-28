@@ -1,5 +1,16 @@
 sudo: required
 dist: xenial
+branches:
+  only:
+    - master
+    - develop
+notifications:
+    email:
+      on_success: never
+      on_failure: always
+    slack:
+      rooms:
+       - mystikweb:wwr5wbNJafTpFy18nCyrXW7J#pingpongdemo
 language: csharp
 mono: none
 dotnet: 2.2.300
