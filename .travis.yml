@@ -1,7 +1,8 @@
 sudo: required
+dist: xenial
 language: csharp
 mono: none
-dotnet: 2.2.204
+dotnet: 2.2.300
 solution: PingPong.sln
 script:
   - dotnet restore
