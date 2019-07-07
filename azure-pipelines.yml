@@ -35,6 +35,8 @@ steps:
     command: publish
     projects: '**src/**/*.csproj'
     arguments: '--configuration $(buildConfiguration)'
+    zipAfterPublish: true
+    publishWebProjects: true
 
 - task: PublishPipelineArtifact@0
   displayName: 'Publish WebApp'
