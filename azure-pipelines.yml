@@ -42,4 +42,4 @@ steps:
   displayName: 'Publish WebApp'
   inputs:
     artifactName: 'PingPongBuild'
-    targetPath: '$(Build.ArtifactStagingDirectory)/*.zip'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
