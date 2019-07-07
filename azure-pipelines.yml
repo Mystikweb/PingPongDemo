@@ -34,12 +34,12 @@ steps:
   inputs:
     command: publish
     projects: '**src/**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-    zipAfterPublish: true
     publishWebProjects: true
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: true
 
 - task: PublishPipelineArtifact@0
   displayName: 'Publish WebApp'
   inputs:
     artifactName: 'PingPongBuild'
-    targetPath: 'PingPongBuild'
+    targetPath: '$(Build.ArtifactStagingDirectory)'
