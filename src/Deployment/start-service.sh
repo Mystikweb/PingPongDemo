@@ -3,10 +3,10 @@
 SERVICE_FILE=/etc/systemd/system/kestrel-pingpong.service
 
 if test -f "$SERVICE_FILE"; then
-    sudo -S systemctl start kestrel-pingpong.service
+    sudo systemctl start kestrel-pingpong.service
 else
-    sudo -S touch /etc/systemd/system/kestrel-pingpong.service
-    sudo -S echo "[Unit]
+    sudo touch /etc/systemd/system/kestrel-pingpong.service
+    sudo echo "[Unit]
 Description=PingPong Demo App running on Ubuntu
 
 [Service]
@@ -24,5 +24,5 @@ Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
 [Install]
 WantedBy=multi-user.target" > /etc/systemd/system/kestrel-pingpong.service 
 
-   sudo -S systemctl start kestrel-pingpong.service
+   sudo systemctl enable kestrel-pingpong.service
 fi
