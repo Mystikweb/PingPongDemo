@@ -41,8 +41,8 @@ steps:
 - task: ArchiveFiles@2
   displayName: 'Add install scripts'
   inputs:
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId)-Installer.zip'
-    rootFolderOrFile: '$(Build.SourcesDirectory)\*.sh'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Installer-$(Build.BuildId).zip'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/*.sh'
 
 - task: PublishPipelineArtifact@0
   displayName: 'Publish WebApp'
