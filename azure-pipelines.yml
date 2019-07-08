@@ -39,10 +39,13 @@ steps:
     zipAfterPublish: true
 
 - task: ArchiveFiles@2
-  displayName: 'Add install scripts'
+  displayName: 'Add Installer Scripts'
   inputs:
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Installer-$(Build.BuildId).zip'
-    rootFolderOrFile: '$(Build.SourcesDirectory)/*.sh'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/**/*.sh'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Installers-$(Build.BuildId).zip'
+    replaceExistingArchive: true
 
 - task: PublishPipelineArtifact@0
   displayName: 'Publish WebApp'
