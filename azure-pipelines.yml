@@ -41,10 +41,10 @@ steps:
 - task: ArchiveFiles@2
   displayName: 'Add Installer Scripts'
   inputs:
-    rootFolderOrFile: '$(Build.SourcesDirectory)/**/*.sh'
+    rootFolderOrFile: '$(Build.SourcesDirectory)/src/Deployment'
     includeRootFolder: false
     archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/Installers-$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/Deployment-$(Build.BuildId).zip'
     replaceExistingArchive: true
 
 - task: PublishPipelineArtifact@0
