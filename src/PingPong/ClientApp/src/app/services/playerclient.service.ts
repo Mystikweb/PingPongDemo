@@ -461,6 +461,9 @@ export class ApiException extends Error {
 }
 
 function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): Observable<any> {
+    console.error(message);
+    console.error(status);
+    console.error(response);
     if(result !== null && result !== undefined)
         return _observableThrow(result);
     else
