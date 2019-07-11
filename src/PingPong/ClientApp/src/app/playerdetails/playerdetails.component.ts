@@ -5,8 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { Player, SkillLevel, PlayerClientService } from '../services/playerclient.service';
-import { isNumber } from 'util';
+import { Player, SkillLevel, PlayerClient } from '../services/playerclient.service';
 
 @Component({
   selector: 'app-playerdetails',
@@ -23,7 +22,7 @@ export class PlayerdetailsComponent implements OnInit {
     private location: Location,
     private builder: FormBuilder,
     private snackBar: MatSnackBar,
-    private client: PlayerClientService) {
+    private client: PlayerClient) {
 
     Object.keys(SkillLevel).forEach(key => {
       if (!isNaN(Number(key))) {
