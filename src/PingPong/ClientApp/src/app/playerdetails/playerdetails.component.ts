@@ -35,8 +35,8 @@ export class PlayerdetailsComponent implements OnInit {
   }
 
   ngOnInit() {
-    const playerId = this.route.snapshot.paramMap.get('playerId');
-    if (isNumber(playerId)) {
+    const playerId = Number(this.route.snapshot.paramMap.get('playerId'));
+    if (!Number.isNaN(playerId)) {
       this.client.getById(Number(playerId)).subscribe((value: any) => {
         this.player = value as Player;
         this.setupPlayer();

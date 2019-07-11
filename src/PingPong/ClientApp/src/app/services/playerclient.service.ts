@@ -21,7 +21,7 @@ export class PlayerClientService {
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(private http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
-        this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
+        this.baseUrl = baseUrl ? baseUrl : "";
     }
 
     getAll(): Observable<Player[] | null> {
