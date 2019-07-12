@@ -7,5 +7,5 @@ if test -f "$SERVICE_FILE"; then
 else
     cp kestrel-pingpong.service /etc/systemd/system/kestrel-pingpong.service 
 
-   sudo -S systemctl enable kestrel-pingpong.service
+    sudo -S systemctl enable kestrel-pingpong.service
 fi
