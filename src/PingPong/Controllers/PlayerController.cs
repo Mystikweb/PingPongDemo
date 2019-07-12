@@ -15,7 +15,6 @@ namespace PingPong.Controllers
         public PlayerController(PingPongContext context)
         {
             this.context = context;
-            this.context.Database.EnsureCreated();
         }
 
         [HttpGet]
