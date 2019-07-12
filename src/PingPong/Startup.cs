@@ -60,6 +60,7 @@ namespace PingPong
         {
             if (env.IsDevelopment())
             {
+                app.UseDatabaseErrorPage();
                 app.UseDeveloperExceptionPage();
             }
             else
