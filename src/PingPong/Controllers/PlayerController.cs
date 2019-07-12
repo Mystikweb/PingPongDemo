@@ -37,6 +37,7 @@ namespace PingPong.Controllers
 
         [HttpPost]
         [ProducesResponseType(400)]
+        [ProducesResponseType(201)]
         public async Task<ActionResult<Player>> Create([FromBody] Player player)
         {
             if (!ModelState.IsValid)

@@ -128,7 +128,7 @@ export class PlayerClient implements IPlayerClient {
             result400 = ProblemDetails.fromJS(resultData400);
             return throwException("A server error occurred.", status, _responseText, _headers, result400);
             }));
-        } else if (status !== 200 && status !== 204) {
+        } else if (status !== 200 && status !== 201 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
             }));
@@ -461,9 +461,6 @@ export class ApiException extends Error {
 }
 
 function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): Observable<any> {
-    console.error(message);
-    console.error(status);
-    console.error(response);
     if(result !== null && result !== undefined)
         return _observableThrow(result);
     else
