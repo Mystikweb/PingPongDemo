@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CURRENT_TIME=date +"%Y_%m_%d_%H_%M"
+CURRENT_TIME=`date +"%Y_%m_%d_%H_%M"`
 
 BACKUP_FOLDER=~/config_backup
 
