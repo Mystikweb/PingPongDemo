@@ -13,7 +13,7 @@ if [ ! -d "$BACKUP_FOLDER" ]; then
     mkdir $BACKUP_FOLDER
 fi
 
-if [ f "$PROXY_CONF" ]; then
+if [ -f "$PROXY_CONF" ]; then
     cp $PROXY_CONF $BACKUP_FOLDER/proxy.conf.$CURRENT_TIME
 fi
 
@@ -22,7 +22,7 @@ cp -f proxy.conf $PROXY_CONF
 cp $NGINX_CONF $BACKUP_FOLDER/nginx.conf.$CURRENT_TIME
 cp -f nginx.conf $NGINX_CONF
 
-if [ f "$SITE_CONF"]; then
+if [ -f "$SITE_CONF" ]; then
     cp $SITE_CONF $BACKUP_FOLDER/pingpong-site.$CURRENT_TIME
 fi
 
