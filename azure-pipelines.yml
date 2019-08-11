@@ -36,20 +36,20 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: DotNetCoreCLI@2
-      displayName: 'Run Build'
+      displayName: 'Run PingPong Build'
       inputs:
         command: build
-        projects: '**/*.csproj'
+        projects: '**/PingPong.csproj'
         arguments: '--configuration $(buildConfiguration)'
   - job: Test
     displayName: 'Test PingPong Application'
     dependsOn: Build
     steps:
       - task: DotNetCoreCLI@2
-        displayName: 'Test Application'
+        displayName: 'Test PingPong Application'
         inputs:
           command: test
-          projects: '**/*.Tests/*.csproj'
+          projects: '**/PingPong.Tests.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
       - task: PublishTestResults@2
         displayName: 'Publish Test Results'
@@ -63,15 +63,15 @@ stages:
   dependsOn: BuildAndTest
   jobs:
   - job: PublishApplication
-    displayName: 'Publish PingPong Demo Build'
+    displayName: 'Publish PingPong Build'
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - task: DotNetCoreCLI@2
-      displayName: 'Publish Application'
+      displayName: 'Create PingPong Package'
       inputs:
         command: publish
-        projects: '**src/**/*.csproj'
+        projects: '**/PingPong.csproj'
         publishWebProjects: true
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
@@ -84,7 +84,7 @@ stages:
         archiveFile: '$(Build.ArtifactStagingDirectory)/Deployment-$(Build.BuildId).zip'
         replaceExistingArchive: true
     - task: PublishPipelineArtifact@0
-      displayName: 'Publish WebApp'
+      displayName: 'Publish PingPong Installation Package'
       inputs:
         artifactName: 'PingPongBuild'
         targetPath: '$(Build.ArtifactStagingDirectory)'
