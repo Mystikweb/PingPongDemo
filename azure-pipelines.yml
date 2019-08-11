@@ -50,7 +50,7 @@ stages:
         inputs:
           command: test
           projects: 'test/PingPong.Tests/PingPong.Tests.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect "XPlat Code Coverage" --logger trx --results-directory $(Common.TestResultsDirectory)'
+          arguments: '--configuration $(buildConfiguration) --collect \"XPlat Code Coverage\" --logger trx --results-directory $(Common.TestResultsDirectory)'
           publishTestResults: true
       - task: PublishTestResults@2
         displayName: 'Publish Test Results'
