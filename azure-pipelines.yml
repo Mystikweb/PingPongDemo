@@ -50,7 +50,7 @@ stages:
         inputs:
           command: test
           projects: '**/PingPong.Tests.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect "Code Coverage"'
+          arguments: '--configuration $(buildConfiguration) --collect "XPlat Code Coverage" --logger trx'
       - task: PublishTestResults@2
         displayName: 'Publish Test Results'
         inputs:
@@ -58,6 +58,12 @@ stages:
           testResultsFiles: '**/*.trx'
           mergeTestResults: true
           buildConfiguration: '$(buildConfiguration)'
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish Coverage Results'
+        inputs:
+          summaryFileLocation: '**/coverage.*.xml'
+          codeCoverageTool: 'Cobertura'
+
 - stage: Publish
   displayName: 'Publish PingPong Demo'
   dependsOn: BuildAndTest
