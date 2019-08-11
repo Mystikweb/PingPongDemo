@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import { PlayerClientService, Player, SkillLevel } from '../services/playerclient.service';
+import { PlayerClient, Player, SkillLevel } from '../services/playerclient.service';
 
 @Component({
   selector: 'app-playerlist',
@@ -12,7 +12,7 @@ export class PlayerlistComponent implements OnInit, AfterViewInit {
   requestRunning = false;
   skillLevels = SkillLevel;
   playerList: Player[];
-  constructor(private snackBar: MatSnackBar, private client: PlayerClientService) { }
+  constructor(private snackBar: MatSnackBar, private client: PlayerClient) { }
 
   ngOnInit() {
   }

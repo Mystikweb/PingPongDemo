@@ -4,34 +4,80 @@
 # Add steps that run tests, create a NuGet package, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
+name: $(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:.r)
+
 trigger:
 - master
 - develop
 
-pool:
-  vmImage: 'ubuntu-latest'
+pr:
+  branches:
+    include:
+    - master
+    - develop
+
+schedules:
+- cron: '0 0 * * *'
+  displayName: 'Nightly Build'
+  branches:
+    include:
+    - develop
 
 variables:
   buildConfiguration: 'Release'
 
-steps:
-- task: DotNetCoreCLI@2
-  displayName: 'Build Application'
-  inputs:
-    command: build
-    projects: '**/*.csproj'
-    arguments: '--configuration $(buildConfiguration)'
-
-- task: DotNetCoreCLI@2
-  displayName: 'Test Application'
-  inputs:
-    command: test
-    projects: '**/*.Tests/*.csproj'
-    arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
-
-- task: PublishTestResults@2
-  displayName: 'Publish Test Results'
-  condition: succeededOrFailed()
-  inputs:
-    testRunner: VSTest
-    testResultsFiles: '**/*.trx'
+stages:
+- stage: BuildAndTest
+  displayName: 'Create PingPong Demo Build with Test Results'
+  jobs:
+  - job: Build
+    displayName: 'Build PingPong Application'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Run Build'
+      inputs:
+        command: build
+        projects: '**/*.csproj'
+        arguments: '--configuration $(buildConfiguration)'
+  - job: Test
+    displayName: 'Test PingPong Application'
+    dependsOn: Build
+    steps:
+      - task: DotNetCoreCLI@2
+        displayName: 'Test Application'
+        inputs:
+          command: test
+          projects: '**/*.Tests/*.csproj'
+          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+- stage: Publish
+  displayName: 'Publish PingPong Demo'
+  dependsOn: BuildAndTest
+  jobs:
+  - job: PublishApplication
+    displayName: 'Publish PingPong Demo Build'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - task: DotNetCoreCLI@2
+      displayName: 'Publish Application'
+      inputs:
+        command: publish
+        projects: '**src/**/*.csproj'
+        publishWebProjects: true
+        arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+        zipAfterPublish: true
+    - task: ArchiveFiles@2
+      displayName: 'Add Installer Scripts'
+      inputs:
+        rootFolderOrFile: '$(Build.SourcesDirectory)/src/Deployment'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/Deployment-$(Build.BuildId).zip'
+        replaceExistingArchive: true
+    - task: PublishPipelineArtifact@0
+      displayName: 'Publish WebApp'
+      inputs:
+        artifactName: 'PingPongBuild'
+        targetPath: '$(Build.ArtifactStagingDirectory)'
