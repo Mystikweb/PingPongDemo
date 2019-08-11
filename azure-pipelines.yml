@@ -58,12 +58,12 @@ stages:
           testResultsFiles: '**/*.trx'
           mergeTestResults: true
           buildConfiguration: '$(buildConfiguration)'
+          searchFolder: $(Common.TestResultsDirectory)
       - task: PublishCodeCoverageResults@1
         displayName: 'Publish Coverage Results'
         inputs:
-          summaryFileLocation: '**/coverage.*.xml'
+          summaryFileLocation: '$(Common.TestResultsDirectory)/**/coverage.*.xml'
           codeCoverageTool: 'Cobertura'
-
 - stage: Publish
   displayName: 'Publish PingPong Demo'
   dependsOn: BuildAndTest
