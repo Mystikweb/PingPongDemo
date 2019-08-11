@@ -50,7 +50,7 @@ stages:
         inputs:
           command: test
           projects: 'test/PingPong.Tests/PingPong.Tests.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect "XPlat Code Coverage"'
+          arguments: '--configuration $(buildConfiguration) --settings test/PingPong.Tests/coverletArgs.runsettings'
       - task: PublishTestResults@2
         displayName: 'Publish Test Results'
         inputs:
