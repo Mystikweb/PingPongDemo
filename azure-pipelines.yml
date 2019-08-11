@@ -53,7 +53,7 @@ stages:
           arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
 - stage: Publish
   displayName: 'Publish PingPong Demo'
-  dependsOn: Build
+  dependsOn: BuildAndTest
   jobs:
   - job: PublishApplication
     displayName: 'Publish PingPong Demo Build'
