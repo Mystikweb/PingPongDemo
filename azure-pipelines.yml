@@ -36,35 +36,53 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - task: DotNetCoreCLI@2
-      displayName: 'Run Build'
+      displayName: 'Run PingPong Build'
       inputs:
         command: build
-        projects: '**/*.csproj'
+        projects: 'src/PingPong/PingPong.csproj'
         arguments: '--configuration $(buildConfiguration)'
   - job: Test
     displayName: 'Test PingPong Application'
     dependsOn: Build
     steps:
       - task: DotNetCoreCLI@2
-        displayName: 'Test Application'
+        displayName: 'Test PingPong Application'
         inputs:
           command: test
-          projects: '**/*.Tests/*.csproj'
-          arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+          projects: 'test/PingPong.Tests/PingPong.Tests.csproj'
+          arguments: '--configuration $(buildConfiguration) --settings $(Build.SourcesDirectory)/test/PingPong.Tests/coverletArgs.runsettings'
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: 'XUnit'
+          testResultsFiles: '*.trx'
+          mergeTestResults: true
+          buildConfiguration: '$(buildConfiguration)'
+          searchFolder: $(Agent.TempDirectory)
+      - task: PublishCodeCoverageResults@1
+        displayName: 'Publish Coverage Results'
+        inputs:
+          codeCoverageTool: 'Cobertura'
+          summaryFileLocation: '$(Agent.TempDirectory)/**/coverage.*.xml'
+      - task: Bash@3
+        displayName: 'Upload Coverage to CodeCov.io'
+        inputs:
+          targetType: 'inline'
+          script: 'bash <(curl -s https://codecov.io/bash) -t $(CodeCovToken) -f $(Agent.TempDirectory)/**/coverage.*.xml'
 - stage: Publish
   displayName: 'Publish PingPong Demo'
   dependsOn: BuildAndTest
   jobs:
   - job: PublishApplication
-    displayName: 'Publish PingPong Demo Build'
+    displayName: 'Publish PingPong Build'
     pool:
       vmImage: 'ubuntu-latest'
     steps:
     - task: DotNetCoreCLI@2
-      displayName: 'Publish Application'
+      displayName: 'Create PingPong Package'
       inputs:
         command: publish
-        projects: '**src/**/*.csproj'
+        projects: 'src/PingPong/PingPong.csproj'
         publishWebProjects: true
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
@@ -77,7 +95,7 @@ stages:
         archiveFile: '$(Build.ArtifactStagingDirectory)/Deployment-$(Build.BuildId).zip'
         replaceExistingArchive: true
     - task: PublishPipelineArtifact@0
-      displayName: 'Publish WebApp'
+      displayName: 'Publish PingPong Installation Package'
       inputs:
         artifactName: 'PingPongBuild'
         targetPath: '$(Build.ArtifactStagingDirectory)'

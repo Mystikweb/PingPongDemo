@@ -2,11 +2,23 @@
 
 This is a simple code challenge that I was asked for advice on so I thought I would throw something together quickly.
 
-[![Build Status](https://travis-ci.com/Mystikweb/PingPongDemo.svg?branch=master)](https://travis-ci.com/Mystikweb/PingPongDemo) [![Build Status](https://travis-ci.com/Mystikweb/PingPongDemo.svg?branch=develop)](https://travis-ci.com/Mystikweb/PingPongDemo)
+## Build Status
 
-[![Build Status](https://dev.azure.com/mystikweb/PingPongDemo/_apis/build/status/Mystikweb.PingPongDemo?branchName=master)](https://dev.azure.com/mystikweb/PingPongDemo/_build/latest?definitionId=8&branchName=master) [![Build Status](https://dev.azure.com/mystikweb/PingPongDemo/_apis/build/status/Mystikweb.PingPongDemo?branchName=develop)](https://dev.azure.com/mystikweb/PingPongDemo/_build/latest?definitionId=8&branchName=develop)
+| Master | Develop |
+| --- | ---|
+| [![Build Status](https://dev.azure.com/mystikweb/PingPongDemo/_apis/build/status/Mystikweb.PingPongDemo?branchName=master)](https://dev.azure.com/mystikweb/PingPongDemo/_build/latest?definitionId=8&branchName=master) | [![Build Status](https://dev.azure.com/mystikweb/PingPongDemo/_apis/build/status/Mystikweb.PingPongDemo?branchName=develop)](https://dev.azure.com/mystikweb/PingPongDemo/_build/latest?definitionId=8&branchName=develop) |
+
+## Code Coverage
+
+| Master | Develop |
+| --- | ---|
+| [![codecov](https://codecov.io/gh/Mystikweb/PingPongDemo/branch/master/graph/badge.svg)](https://codecov.io/gh/Mystikweb/PingPongDemo) | [![codecov](https://codecov.io/gh/Mystikweb/PingPongDemo/branch/develop/graph/badge.svg)](https://codecov.io/gh/Mystikweb/PingPongDemo) |
 
 ## Release Notes
+
+### Release 0.4.3 Changes
+
+- More unit testing and code coverage uploads
 
 ### Release 0.4.2 Changes
 
