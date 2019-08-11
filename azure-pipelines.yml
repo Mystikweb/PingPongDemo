@@ -51,6 +51,13 @@ stages:
           command: test
           projects: '**/*.Tests/*.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+      - task: PublishTestResults@2
+        displayName: 'Publish Test Results'
+        inputs:
+          testResultsFormat: 'XUnit'
+          testResultsFiles: '**/*.trx'
+          mergeTestResults: true
+          buildConfiguration: '$(buildConfiguration)'
 - stage: Publish
   displayName: 'Publish PingPong Demo'
   dependsOn: BuildAndTest
