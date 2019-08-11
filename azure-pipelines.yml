@@ -39,7 +39,7 @@ stages:
       displayName: 'Run PingPong Build'
       inputs:
         command: build
-        projects: '**/PingPong.csproj'
+        projects: 'src/PingPong/PingPong.csproj'
         arguments: '--configuration $(buildConfiguration)'
   - job: Test
     displayName: 'Test PingPong Application'
@@ -49,7 +49,7 @@ stages:
         displayName: 'Test PingPong Application'
         inputs:
           command: test
-          projects: '**/*.Tests.csproj'
+          projects: 'test/PingPong.Tests/PingPong.Tests.csproj'
           arguments: '--configuration $(buildConfiguration) --collect "XPlat Code Coverage" --logger trx --results-directory $(Common.TestResultsDirectory)'
           publishTestResults: true
       - task: PublishTestResults@2
@@ -78,7 +78,7 @@ stages:
       displayName: 'Create PingPong Package'
       inputs:
         command: publish
-        projects: '**/PingPong.csproj'
+        projects: 'src/PingPong/PingPong.csproj'
         publishWebProjects: true
         arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
         zipAfterPublish: true
