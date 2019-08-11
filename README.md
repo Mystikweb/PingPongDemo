@@ -8,6 +8,10 @@ This is a simple code challenge that I was asked for advice on so I thought I wo
 
 ## Release Notes
 
+### Release 0.4.2 Changes
+
+- Angular update to latest stable
+
 ### Release 0.4.1 Changes
 
 - Azure Pipelines CI updates
