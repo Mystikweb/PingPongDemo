@@ -168,5 +168,115 @@ namespace PingPong.Tests.IntegrationTests
 
             Assert.Equal($"{url}/{data.PlayerId}", response.Headers.Location.AbsolutePath);
         }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_invalid_player_returns_bad_request(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.LastName = null;
+
+            var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_invalid_id_returns_not_found(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.Age = DatabaseSeed.GetRandomAge();
+
+            var response = await client.PutAsJsonAsync($"{url}/9999", player);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_valid_player_returns_no_content(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.Age = DatabaseSeed.GetRandomAge();
+
+            var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_valid_player_is_updated(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.LastName = DatabaseSeed.GetRandomLastName();
+            player.Age = DatabaseSeed.GetRandomAge();
+
+            await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+            
+            var getResponse = await client.GetAsync($"{url}/{player.PlayerId}");
+            getResponse.EnsureSuccessStatusCode();
+
+            var resultPlayer = await getResponse.Content.ReadAsAsync<Player>();
+
+            Assert.Equal(player.LastName, resultPlayer.LastName);
+            Assert.Equal(player.Age, resultPlayer.Age);
+        }
+
+        [Theory]
+        [InlineData("/api/Player/99999")]
+        public async Task delete_invalid_id_returns_not_found(string url)
+        {
+            var response = await client.DeleteAsync(url);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player/1")]
+        public async Task delete_valid_returns_no_content(string url)
+        {
+            var response = await client.DeleteAsync(url);
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player/2")]
+        public async Task delete_valid_removes_player(string url)
+        {
+            var deleteResponse = await client.DeleteAsync(url);
+
+            Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+            var getResponse = await client.GetAsync(url);
+
+            Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
+        }
     }
 }
