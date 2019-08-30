@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PingPong.Models;
 using PingPong.Tests.Mocks;
 using PingPong.Tests.Utilities;
@@ -108,6 +110,19 @@ namespace PingPong.Tests.IntegrationTests
 
         [Theory]
         [InlineData("/api/Player")]
+        public async Task post_invalid_returns_validation_problem_data(string url)
+        {
+            var player = new Player();
+
+            var response = await client.PostAsJsonAsync(url, player);
+
+            var modelState = await response.Content.ReadAsAsync<ValidationProblemDetails>();
+
+            Assert.IsType<ValidationProblemDetails>(modelState);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
         public async Task post_returns_created_status(string url)
         {
             var player = DatabaseSeed.GenerateRandomPlayer();
@@ -185,6 +200,26 @@ namespace PingPong.Tests.IntegrationTests
             var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_invalid_player_returns_validation_problem_data(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.LastName = null;
+
+            var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+
+            var modelState = await response.Content.ReadAsAsync<ValidationProblemDetails>();
+
+            Assert.IsType<ValidationProblemDetails>(modelState);
         }
 
         [Theory]

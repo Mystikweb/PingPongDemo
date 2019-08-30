@@ -8,6 +8,7 @@ namespace PingPong.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public class PlayerController : ControllerBase
     {
         private readonly PingPongContext context;
@@ -40,11 +41,6 @@ namespace PingPong.Controllers
         [ProducesResponseType(201)]
         public async Task<ActionResult<Player>> Create([FromBody] Player player)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             await context.Players.AddAsync(player);
             await context.SaveChangesAsync();
 
@@ -57,11 +53,6 @@ namespace PingPong.Controllers
         [ProducesResponseType(204)]
         public async Task<IActionResult> Update(int id, [FromBody] Player player)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             Player playerToUpdate = await context.Players.FindAsync(id);
             if (playerToUpdate == null)
             {
