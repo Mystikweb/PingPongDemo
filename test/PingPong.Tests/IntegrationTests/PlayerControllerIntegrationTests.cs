@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PingPong.Models;
 using PingPong.Tests.Mocks;
 using PingPong.Tests.Utilities;
@@ -108,6 +110,19 @@ namespace PingPong.Tests.IntegrationTests
 
         [Theory]
         [InlineData("/api/Player")]
+        public async Task post_invalid_returns_validation_problem_data(string url)
+        {
+            var player = new Player();
+
+            var response = await client.PostAsJsonAsync(url, player);
+
+            var modelState = await response.Content.ReadAsAsync<ValidationProblemDetails>();
+
+            Assert.IsType<ValidationProblemDetails>(modelState);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
         public async Task post_returns_created_status(string url)
         {
             var player = DatabaseSeed.GenerateRandomPlayer();
@@ -167,6 +182,136 @@ namespace PingPong.Tests.IntegrationTests
             var data = await response.Content.ReadAsAsync<Player>();
 
             Assert.Equal($"{url}/{data.PlayerId}", response.Headers.Location.AbsolutePath);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_invalid_player_returns_bad_request(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.LastName = null;
+
+            var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_invalid_player_returns_validation_problem_data(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.LastName = null;
+
+            var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+
+            var modelState = await response.Content.ReadAsAsync<ValidationProblemDetails>();
+
+            Assert.IsType<ValidationProblemDetails>(modelState);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_invalid_id_returns_not_found(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.Age = DatabaseSeed.GetRandomAge();
+
+            var response = await client.PutAsJsonAsync($"{url}/9999", player);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_valid_player_returns_no_content(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.Age = DatabaseSeed.GetRandomAge();
+
+            var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player")]
+        public async Task put_valid_player_is_updated(string url)
+        {
+            var generated = DatabaseSeed.GenerateRandomPlayer();
+
+            var postResponse = await client.PostAsJsonAsync(url, generated);
+            postResponse.EnsureSuccessStatusCode();
+
+            var player = await postResponse.Content.ReadAsAsync<Player>();
+
+            player.LastName = DatabaseSeed.GetRandomLastName();
+            player.Age = DatabaseSeed.GetRandomAge();
+
+            await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+            
+            var getResponse = await client.GetAsync($"{url}/{player.PlayerId}");
+            getResponse.EnsureSuccessStatusCode();
+
+            var resultPlayer = await getResponse.Content.ReadAsAsync<Player>();
+
+            Assert.Equal(player.LastName, resultPlayer.LastName);
+            Assert.Equal(player.Age, resultPlayer.Age);
+        }
+
+        [Theory]
+        [InlineData("/api/Player/99999")]
+        public async Task delete_invalid_id_returns_not_found(string url)
+        {
+            var response = await client.DeleteAsync(url);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player/1")]
+        public async Task delete_valid_returns_no_content(string url)
+        {
+            var response = await client.DeleteAsync(url);
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Theory]
+        [InlineData("/api/Player/2")]
+        public async Task delete_valid_removes_player(string url)
+        {
+            var deleteResponse = await client.DeleteAsync(url);
+
+            Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+
+            var getResponse = await client.GetAsync(url);
+
+            Assert.Equal(HttpStatusCode.NotFound, getResponse.StatusCode);
         }
     }
 }
