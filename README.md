@@ -16,6 +16,10 @@ This is a simple code challenge that I was asked for advice on so I thought I wo
 
 ## Release Notes
 
+### Release 0.4.4 Changes
+
+- Fixing code coverage test exclusions
+
 ### Release 0.4.3 Changes
 
 - More unit testing and code coverage uploads
