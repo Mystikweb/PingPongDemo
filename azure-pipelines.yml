@@ -43,6 +43,8 @@ stages:
         arguments: '--configuration $(buildConfiguration)'
   - job: Test
     displayName: 'Test PingPong Application'
+    pool:
+      vmImage: 'ubuntu-latest'
     dependsOn: Build
     steps:
       - task: DotNetCoreCLI@2
