@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Newtonsoft.Json;
 using PingPong.Models;
 using PingPong.Tests.Mocks;
 using PingPong.Tests.Utilities;
@@ -12,12 +12,12 @@ using Xunit;
 namespace PingPong.Tests.IntegrationTests
 {
     public class PlayerControllerIntegrationTests
-        : IClassFixture<MockWebApplicationFactory<PingPong.Startup>>
+        : IClassFixture<MockWebApplicationFactory<Startup>>
     {
-        private readonly MockWebApplicationFactory<PingPong.Startup> mockFactory;
+        private readonly MockWebApplicationFactory<Startup> mockFactory;
         private readonly HttpClient client;
 
-        public PlayerControllerIntegrationTests(MockWebApplicationFactory<PingPong.Startup> mockFactory)
+        public PlayerControllerIntegrationTests(MockWebApplicationFactory<Startup> mockFactory)
         {
             this.mockFactory = mockFactory;
             client = mockFactory.CreateClient();
@@ -51,7 +51,8 @@ namespace PingPong.Tests.IntegrationTests
             var response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
-            var data = await response.Content.ReadAsAsync<List<Player>>();
+            var content = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<List<Player>>(content);
 
             Assert.IsType<List<Player>>(data);
         }
@@ -92,7 +93,8 @@ namespace PingPong.Tests.IntegrationTests
             var response = await client.GetAsync(url);
             response.EnsureSuccessStatusCode();
 
-            var data = await response.Content.ReadAsAsync<Player>();
+            var content = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<Player>(content);
 
             Assert.IsType<Player>(data);
         }
@@ -103,7 +105,11 @@ namespace PingPong.Tests.IntegrationTests
         {
             var player = new Player();
 
-            var response = await client.PostAsJsonAsync(url, player);
+            var content = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync(url, content);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
@@ -114,9 +120,14 @@ namespace PingPong.Tests.IntegrationTests
         {
             var player = new Player();
 
-            var response = await client.PostAsJsonAsync(url, player);
+            var content = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
 
-            var modelState = await response.Content.ReadAsAsync<ValidationProblemDetails>();
+            var response = await client.PostAsync(url, content);
+
+            var responseConent = await response.Content.ReadAsStringAsync();
+            var modelState = JsonConvert.DeserializeObject<ValidationProblemDetails>(responseConent);
 
             Assert.IsType<ValidationProblemDetails>(modelState);
         }
@@ -127,7 +138,11 @@ namespace PingPong.Tests.IntegrationTests
         {
             var player = DatabaseSeed.GenerateRandomPlayer();
 
-            var response = await client.PostAsJsonAsync(url, player);
+            var content = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync(url, content);
 
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
         }
@@ -138,7 +153,11 @@ namespace PingPong.Tests.IntegrationTests
         {
             var player = DatabaseSeed.GenerateRandomPlayer();
 
-            var response = await client.PostAsJsonAsync(url, player);
+            var content = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync(url, content);
 
             Assert.Equal("application/json; charset=utf-8", 
                 response.Content.Headers.ContentType.ToString());
@@ -150,10 +169,15 @@ namespace PingPong.Tests.IntegrationTests
         {
             var player = DatabaseSeed.GenerateRandomPlayer();
 
-            var response = await client.PostAsJsonAsync(url, player);
+            var content = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync(url, content);
             response.EnsureSuccessStatusCode();
 
-            var data = await response.Content.ReadAsAsync<Player>();
+            var playerResponse = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<Player>(playerResponse);
 
             Assert.IsType<Player>(data);
         }
@@ -164,7 +188,11 @@ namespace PingPong.Tests.IntegrationTests
         {
             var player = DatabaseSeed.GenerateRandomPlayer();
 
-            var response = await client.PostAsJsonAsync(url, player);
+            var content = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync(url, content);
             response.EnsureSuccessStatusCode();
 
             Assert.NotNull(response.Headers.Location);
@@ -176,10 +204,15 @@ namespace PingPong.Tests.IntegrationTests
         {
             var player = DatabaseSeed.GenerateRandomPlayer();
 
-            var response = await client.PostAsJsonAsync(url, player);
+            var content = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync(url, content);
             response.EnsureSuccessStatusCode();
 
-            var data = await response.Content.ReadAsAsync<Player>();
+            var playerResponse = await response.Content.ReadAsStringAsync();
+            var data = JsonConvert.DeserializeObject<Player>(playerResponse);
 
             Assert.Equal($"{url}/{data.PlayerId}", response.Headers.Location.AbsolutePath);
         }
@@ -190,14 +223,23 @@ namespace PingPong.Tests.IntegrationTests
         {
             var generated = DatabaseSeed.GenerateRandomPlayer();
 
-            var postResponse = await client.PostAsJsonAsync(url, generated);
+            var postContent = new StringContent(JsonConvert.SerializeObject(generated),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var postResponse = await client.PostAsync(url, postContent);
             postResponse.EnsureSuccessStatusCode();
 
-            var player = await postResponse.Content.ReadAsAsync<Player>();
+            var playerContent = await postResponse.Content.ReadAsStringAsync();
+            var player = JsonConvert.DeserializeObject<Player>(playerContent);
 
             player.LastName = null;
 
-            var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+            var putContent = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PutAsync($"{url}/{player.PlayerId}", putContent);
 
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
@@ -208,16 +250,26 @@ namespace PingPong.Tests.IntegrationTests
         {
             var generated = DatabaseSeed.GenerateRandomPlayer();
 
-            var postResponse = await client.PostAsJsonAsync(url, generated);
+            var postContent = new StringContent(JsonConvert.SerializeObject(generated),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var postResponse = await client.PostAsync(url, postContent);
             postResponse.EnsureSuccessStatusCode();
 
-            var player = await postResponse.Content.ReadAsAsync<Player>();
+            var playerContent = await postResponse.Content.ReadAsStringAsync();
+            var player = JsonConvert.DeserializeObject<Player>(playerContent);
 
             player.LastName = null;
 
-            var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+            var putContent = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
 
-            var modelState = await response.Content.ReadAsAsync<ValidationProblemDetails>();
+            var response = await client.PutAsync($"{url}/{player.PlayerId}", putContent);
+
+            var responseConent = await response.Content.ReadAsStringAsync();
+            var modelState = JsonConvert.DeserializeObject<ValidationProblemDetails>(responseConent);
 
             Assert.IsType<ValidationProblemDetails>(modelState);
         }
@@ -228,14 +280,23 @@ namespace PingPong.Tests.IntegrationTests
         {
             var generated = DatabaseSeed.GenerateRandomPlayer();
 
-            var postResponse = await client.PostAsJsonAsync(url, generated);
+            var postContent = new StringContent(JsonConvert.SerializeObject(generated),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var postResponse = await client.PostAsync(url, postContent);
             postResponse.EnsureSuccessStatusCode();
 
-            var player = await postResponse.Content.ReadAsAsync<Player>();
+            var playerContent = await postResponse.Content.ReadAsStringAsync();
+            var player = JsonConvert.DeserializeObject<Player>(playerContent);
 
             player.Age = DatabaseSeed.GetRandomAge();
 
-            var response = await client.PutAsJsonAsync($"{url}/9999", player);
+            var putContent = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PutAsync($"{url}/9999", putContent);
 
             Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
@@ -246,14 +307,23 @@ namespace PingPong.Tests.IntegrationTests
         {
             var generated = DatabaseSeed.GenerateRandomPlayer();
 
-            var postResponse = await client.PostAsJsonAsync(url, generated);
+            var postContent = new StringContent(JsonConvert.SerializeObject(generated),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var postResponse = await client.PostAsync(url, postContent);
             postResponse.EnsureSuccessStatusCode();
 
-            var player = await postResponse.Content.ReadAsAsync<Player>();
+            var playerContent = await postResponse.Content.ReadAsStringAsync();
+            var player = JsonConvert.DeserializeObject<Player>(playerContent);
 
             player.Age = DatabaseSeed.GetRandomAge();
 
-            var response = await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
+            var putContent = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PutAsync($"{url}/{player.PlayerId}", putContent);
 
             Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
         }
@@ -264,20 +334,30 @@ namespace PingPong.Tests.IntegrationTests
         {
             var generated = DatabaseSeed.GenerateRandomPlayer();
 
-            var postResponse = await client.PostAsJsonAsync(url, generated);
+            var postContent = new StringContent(JsonConvert.SerializeObject(generated),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var postResponse = await client.PostAsync(url, postContent);
             postResponse.EnsureSuccessStatusCode();
 
-            var player = await postResponse.Content.ReadAsAsync<Player>();
+            var playerContent = await postResponse.Content.ReadAsStringAsync();
+            var player = JsonConvert.DeserializeObject<Player>(playerContent);
 
             player.LastName = DatabaseSeed.GetRandomLastName();
             player.Age = DatabaseSeed.GetRandomAge();
 
-            await client.PutAsJsonAsync($"{url}/{player.PlayerId}", player);
-            
+            var putContent = new StringContent(JsonConvert.SerializeObject(player),
+                System.Text.Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PutAsync($"{url}/{player.PlayerId}", putContent);
+
             var getResponse = await client.GetAsync($"{url}/{player.PlayerId}");
             getResponse.EnsureSuccessStatusCode();
 
-            var resultPlayer = await getResponse.Content.ReadAsAsync<Player>();
+            var getContent = await getResponse.Content.ReadAsStringAsync();
+            var resultPlayer = JsonConvert.DeserializeObject<Player>(getContent);
 
             Assert.Equal(player.LastName, resultPlayer.LastName);
             Assert.Equal(player.Age, resultPlayer.Age);
